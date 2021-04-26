@@ -18,8 +18,8 @@
       <ul class="right-box">
         <li v-for="file in file_data" @click="processFile(file)">
           <img v-if="!file.type||file.type==='root'" src="../assets/images/icons/disk.png" alt="">
-          <img v-if="file.title.endsWith('html')" src="../assets/images/icons/html.png" alt=""/>
-          <div>
+          <img v-if="file.title.endsWith('html')||file.type==='link'" src="../assets/images/icons/html.png" alt=""/>
+          <div :title="file.title + '\n' + file.inner_name">
             <span class="title">{{file.title}}</span>
             <span v-if="!file.type||file.type==='root'" class="progress-bar"></span>
             <span class="xtitle">{{file.inner_name}}</span>
@@ -37,8 +37,8 @@
     name: 'Computer',
     data(){
       return {
-        root_file_data:[{"title":"猫哥的视界","source":["blog2","blog"],"inner_name":"maogeshijue","type":"root"},{"title":"天涯时事","source":["blog2","blog"],"inner_name":"tianyaDaily","type":"root"},{"title":"渤海小吏的封建脉络百战","source":["blog2"],"inner_name":"bohaiminihistory","type":"root"},{"title":"长尾科技","source":["blog2"],"inner_name":"longtailtech","type":"root"},{"title":"？？？","source":["blog2"],"inner_name":"","type":"root"}],
-        neighbour_data:[{"title":"Lance.moe",inner_name:'lance_moe',url:"https://lance.moe",type:'link'}],
+        root_file_data:[],
+        neighbour_data:[],
         file_data:[],
         currentPath:''
       }
@@ -105,7 +105,13 @@
       }
     },
     mounted () {
-      this.enterRoot()
+      axios.get('https://kbtxwer.gitee.io/data/root_file_data.json').then(e=>{
+        this.root_file_data = e.data
+        this.enterRoot()
+      })
+      axios.get('https://kbtxwer.gitee.io/data/neighbour_data.json').then(e=>{
+        this.neighbour_data = e.data
+      })
     }
   }
 </script>
@@ -176,7 +182,7 @@
   .right-box li {
     display: flex;
     height: 75px;
-    width: 20%;
+    width: 25%;
     overflow: hidden;
     padding: 10px 20px;
     margin-left: 25px;
