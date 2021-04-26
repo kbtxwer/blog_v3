@@ -5,9 +5,9 @@ import store from './store'
 
 import layer from 'vue-layer'
 import 'vue-layer/lib/vue-layer.css';
- 
+import axios from 'axios'
 Vue.prototype.$layer = layer(Vue);
-
+Vue.prototype.axios = axios;
 Vue.config.productionTip = false
 
 new Vue({

@@ -3,7 +3,8 @@
     <div class="header">
       <ul class="header-left">
         <li class="iconfont"><a href="https://www.apple.com/cn/" target="_blank" title="苹果官网">&#xe60b;</a></li>
-        <li><a href="https://github.com/lw1995/Vue-Mac-WebDesktop" target="_blank">GitHub</a></li>
+        <li><a href="https://github.com/lw1995/Vue-Mac-WebDesktop" target="_blank" title="原版">GitHub</a></li>
+        <li><a href="https://gitee.com/kbtxwer/mac-web-desktop" target="_blank" title="改版">Gitee</a></li>
         <li @click="computer">文件</li>
         <li @click="wallpaper">壁纸</li>
         <li @click="about">关于</li>
@@ -20,45 +21,45 @@
     </div>
     <div class="content-hone" :style="{backgroundImage: 'url(' + bgSrc + ')' }" @click="weatherHide">
       <ul class="app-list">
-        <li class="list-item" @click="computer"><img src="../assets/images/computer.png" alt=""><span>我的电脑</span></li>
-        <li class="list-item"><img src="../assets/images/TrashIcon.png" alt=""><span>回收站</span></li>
+        <li class="list-item" @click="computer"><img src="../assets/images/icons/computer.png" alt=""><span>我的电脑</span></li>
+        <li class="list-item" onclick="window.open('https://pan.baidu.com/disk/main#/recyclebin/list')"><img src="../assets/images/icons/TrashIcon.png" alt=""><span>回收站</span></li>
         <li class="list-item" @click="tools"><img src="../assets/images/tool.png" alt=""><span>工具箱</span></li>
       </ul>
     </div>
     <div id="container" @click="weatherHide">
       <div id="dock">
         <ul>
-          <li>
-            <span>Finder</span>
-            <a href="javascript:void(0)"><img src="../assets/images/1.png"></a>
+          <li onclick="window.open('https://www.fenderchina.net/')">
+            <span>Finder 芬达</span>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/1.png"></a>
           </li>
           <li @click="openBrowser">
             <span>Chrome</span>
-            <a href="javascript:void(0)"><img src="../assets/images/2.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/2.png"></a>
           </li>
-          <li>
+          <li onclick="window.open('https://ext.chrome.360.cn/')">
             <span>App Store</span>
-            <a href="javascript:void(0)"><img src="../assets/images/4.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/4.png"></a>
           </li>
-          <li>
+          <li onclick="window.open('https://codepen.io/')">
             <span>Codepen</span>
-            <a href="javascript:void(0)"><img src="../assets/images/5.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/5.png"></a>
           </li>
-          <li>
+          <li onclick="window.open('https://launchpad.net/')">
             <span>Launchpad</span>
-            <a href="javascript:void(0)"><img src="../assets/images/6.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/6.png"></a>
           </li>
-          <li>
+          <li onclick="window.open('http://zhushou.360.cn/detail/index/soft_id/731461')">
             <span>System setup</span>
-            <a href="javascript:void(0)"><img src="../assets/images/7.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/7.png"></a>
           </li>
-          <li>
+          <li onclick="window.open('https://fanyi.baidu.com')">
             <span>Siri</span>
-            <a href="javascript:void(0)"><img src="../assets/images/8.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/8.png"></a>
           </li>
           <li @click="openMusic">
             <span>酷我音乐</span>
-            <a href="javascript:void(0)"><img src="../assets/images/9.png"></a>
+            <a href="javascript:void(0)"><img src="../assets/images/icons/9.png"></a>
           </li>
         </ul>
       </div>
@@ -104,11 +105,20 @@
         computerShow: false,
         aboutShow: false,
         weatherShow: false,
-        bgSrc: '',
+        bgSrc: '../assets/images/wallpapers/bg.jpg',
       }
     },
 
     created() {
+
+      let ua = navigator.userAgent.toLowerCase();
+      //alert(ua)
+      if(ua.indexOf('android')!==-1||ua.indexOf('Adr') > -1||(!!ua.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/))){
+        let c = confirm('当前可能是手机访问，建议跳转到简易版本')
+        if(c){
+          window.location = 'https://kbtxwer.gitee.io/articles'
+        }
+      }
       clearInterval(this.setInter)
       this.setInter = setInterval(() => {
         this.newDate()
@@ -182,7 +192,7 @@
       },
       computer() {
         this.$layer.iframe({
-          title: '我的电脑',
+          title: '我的电脑 v1.0',
           maxmin: true,
           area: ['70%', '60%'],
           content: {
@@ -288,7 +298,7 @@
 
   .content-hone {
     height: calc(100vh - 30px);
-    background: url(../assets/images/bg.jpg) no-repeat no-repeat center;
+    background: url(../assets/images/wallpapers/bg.jpg) no-repeat no-repeat center;
     background-size: 100% 100%;
     overflow: hidden;
   }

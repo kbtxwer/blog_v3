@@ -1,35 +1,29 @@
 <template>
   <div class="computer">
-    <div class="navigation"><img src="../assets/images/computer.png" alt="">&nbsp;&gt;&nbsp;我的电脑</div>
+    <div class="navigation"><img src="../assets/images/icons/computer.png" alt="">{{currentPath}}</div>
     <div class="content">
       <ul class="left-box">
-        <li class="iconfont">&#xe636;&nbsp;&nbsp;主目录</li>
-        <li class="iconfont">&#xe600;&nbsp;&nbsp;视频</li>
-        <li class="iconfont">&#xe680;&nbsp;&nbsp;音乐</li>
-        <li class="iconfont">&#xe665;&nbsp;&nbsp;图片</li>
-        <li class="iconfont">&#xe61f;&nbsp;&nbsp;文档</li>
-        <li class="iconfont">&#xe6ad;&nbsp;&nbsp;下载</li>
-        <li class="iconfont">&#xe61c;&nbsp;&nbsp;回收站</li>
-        <li class="iconfont" style="border-top: 1px solid #B4B4B4;">&#xe622;&nbsp;&nbsp;计算机</li>
-        <li class="iconfont">&#xe743;&nbsp;&nbsp;云盘</li>
-        <li class="iconfont" style="border-top: 1px solid #B4B4B4;">&#xe638;&nbsp;&nbsp;网络邻居</li>
+        <li class="iconfont" @click="enterRoot">&#xe636;&nbsp;&nbsp;主目录</li>
+        <li class="iconfont" onclick="window.open('https://bilibili.com')">&#xe600;&nbsp;&nbsp;视频</li>
+        <li class="iconfont" onclick="window.open('https://www.kuwo.cn/')">&#xe680;&nbsp;&nbsp;音乐</li>
+        <li class="iconfont" onclick="window.open('https://bing.ioliu.cn/')">&#xe665;&nbsp;&nbsp;图片</li>
+        <li class="iconfont" onclick="window.open('https://docs.qq.com')">&#xe61f;&nbsp;&nbsp;文档</li>
+        <li class="iconfont" onclick="window.open('https://npupt.com')" title="仅限西工大学生访问">&#xe6ad;&nbsp;&nbsp;下载</li>
+        <li class="iconfont" onclick="window.open('https://pan.baidu.com/disk/main#/recyclebin/list')">&#xe61c;&nbsp;&nbsp;回收站</li>
+        <li class="iconfont" @click="enterRoot" style="border-top: 1px solid #B4B4B4;">&#xe622;&nbsp;&nbsp;我的电脑</li>
+        <li class="iconfont" onclick="window.open('https://pan-yz.chaoxing.com')">&#xe743;&nbsp;&nbsp;云盘</li>
+        <li class="iconfont" @click="enterNeighbour" style="border-top: 1px solid #B4B4B4;">&#xe638;&nbsp;&nbsp;网络邻居(友链)</li>
       </ul>
 
       <ul class="right-box">
-        <li><img src="../assets/images/disk.png" alt="">
-          <div><span class="title">办公</span><span class="progress-bar"></span><span class="xtitle">324G可用</span></div>
-        </li>
-        <li><img src="../assets/images/disk.png" alt="">
-          <div><span class="title">办公</span><span class="progress-bar"></span><span class="xtitle">324G可用</span></div>
-        </li>
-        <li><img src="../assets/images/disk.png" alt="">
-          <div><span class="title">办公</span><span class="progress-bar"></span><span class="xtitle">324G可用</span></div>
-        </li>
-        <li><img src="../assets/images/disk.png" alt="">
-          <div><span class="title">办公</span><span class="progress-bar"></span><span class="xtitle">324G可用</span></div>
-        </li>
-        <li><img src="../assets/images/disk.png" alt="">
-          <div><span class="title">办公</span><span class="progress-bar"></span><span class="xtitle">324G可用</span></div>
+        <li v-for="file in file_data" @click="processFile(file)">
+          <img v-if="!file.type||file.type==='root'" src="../assets/images/icons/disk.png" alt="">
+          <img v-if="file.title.endsWith('html')" src="../assets/images/icons/html.png" alt=""/>
+          <div>
+            <span class="title">{{file.title}}</span>
+            <span v-if="!file.type||file.type==='root'" class="progress-bar"></span>
+            <span class="xtitle">{{file.inner_name}}</span>
+          </div>
         </li>
       </ul>
     </div>
@@ -37,13 +31,81 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: 'Computer',
+    data(){
+      return {
+        root_file_data:[{"title":"猫哥的视界","source":["blog2","blog"],"inner_name":"maogeshijue","type":"root"},{"title":"天涯时事","source":["blog2","blog"],"inner_name":"tianyaDaily","type":"root"},{"title":"渤海小吏的封建脉络百战","source":["blog2"],"inner_name":"bohaiminihistory","type":"root"},{"title":"长尾科技","source":["blog2"],"inner_name":"longtailtech","type":"root"},{"title":"？？？","source":["blog2"],"inner_name":"","type":"root"}],
+        neighbour_data:[{"title":"Lance.moe",inner_name:'lance_moe',url:"https://lance.moe",type:'link'}],
+        file_data:[],
+        currentPath:''
+      }
+    },
     props: {
 
     },
     methods: {
-
+      async getData(file){
+        let combined_data = []
+        //只有（根）目录能请求到数据，此外要是没有资源目录也无法打开
+        if((file.type!=='root'&&file.type!=='floder')||!file.source) return combined_data;
+        let source = file.source
+        source.forEach((item)=>{
+          //如果字符串没有以http开头，则从我的博客中直接引用资源
+          //console.log(item)
+          let url
+          if(!item.startsWith('http')){
+            // https://kbtxwer.gitee.io/blog/maogeshijue/json_utf8
+            url = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
+            item = url + 'json_utf8'
+          }
+          let cur_data = this.getReq(item)
+          cur_data.then(e=>{
+            //console.log(e)
+            //文章类型
+            if(e.data.article){
+              e.data.article.forEach(a=>{
+                a.type='file'
+                a.title = a.name
+                a.inner_name = a.date
+                a.url=url + a.name
+                combined_data.push(a)
+              })
+            }
+          })
+        })
+        this.file_data = combined_data
+        //return combined_data;
+      },
+      async getReq(url){
+        let res = await axios.get(url)
+        return res
+      },
+      enterRoot(){
+        this.currentPath = '> 我的电脑'
+        this.file_data = this.root_file_data
+      },
+      enterNeighbour(){
+        this.currentPath = '> 友情链接',
+          this.file_data = this.neighbour_data
+      },
+      processFile(file){
+        if(file.type==='floder'||file.type==='root'){
+          this.enterDir(file)
+          return
+        }
+        if(file.url) window.open(file.url)
+        else alert('没有合适的方式处理此资源')
+      },
+      enterDir(file){
+        this.currentPath += ('/' + file.title)
+        console.log(this.getData(file))
+      }
+    },
+    mounted () {
+      this.enterRoot()
     }
   }
 </script>
@@ -114,6 +176,8 @@
   .right-box li {
     display: flex;
     height: 75px;
+    width: 20%;
+    overflow: hidden;
     padding: 10px 20px;
     margin-left: 25px;
     margin-top: 10px;
@@ -131,7 +195,7 @@
     display: inline-block;
     margin-top: 8px;
     margin-right: 10px;
-    width: 45px;
+    /*width: 45px;*/
     height: 45px;
   }
 

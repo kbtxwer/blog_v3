@@ -2,12 +2,12 @@
   <div class="wallpaper">
     <div class="content">
       <ul class="list-box">
-        <li data-id='1' @click="choice"><img :class="[imgNum == 1 ? 'active' : '']" src="../assets/images/bg.jpg" alt=""></li>
-        <li data-id='2' @click="choice"><img :class="[imgNum == 2 ? 'active' : '']" src="../assets/images/bg2.jpg" alt=""></li>
-        <li data-id='3' @click="choice"><img :class="[imgNum == 3 ? 'active' : '']" src="../assets/images/bg3.jpg" alt=""></li>
-        <li data-id='4' @click="choice"><img :class="[imgNum == 4 ? 'active' : '']" src="../assets/images/bg4.jpg" alt=""></li>
-        <li data-id='5' @click="choice"><img :class="[imgNum == 5 ? 'active' : '']" src="../assets/images/bg5.jpg" alt=""></li>
-        <li data-id='6' @click="choice"><img :class="[imgNum == 6 ? 'active' : '']" src="../assets/images/bg6.jpg" alt=""></li>
+        <li data-id='1' @click="choice"><img :class="[imgNum == 1 ? 'active' : '']" src="../assets/images/wallpapers/bg.jpg" alt=""></li>
+        <li data-id='2' @click="choice"><img :class="[imgNum == 2 ? 'active' : '']" src="../assets/images/wallpapers/bg2.jpg" alt=""></li>
+        <li data-id='4' @click="choice"><img :class="[imgNum == 4 ? 'active' : '']" src="../assets/images/wallpapers/bg4.jpg" alt=""></li>
+        <li data-id='3' @click="choice"><img :class="[imgNum == 3 ? 'active' : '']" src="../assets/images/wallpapers/bg3.jpg" alt=""></li>
+        <li data-id='5' @click="choice"><img :class="[imgNum == 5 ? 'active' : '']" src="../assets/images/wallpapers/bg5.jpg" alt=""></li>
+        <li data-id='6' @click="choice"><img :class="[imgNum == 6 ? 'active' : '']" src="../assets/images/wallpapers/bg6.jpg" alt=""></li>
       </ul>
       <div class="btn-confirm" @click="confirm">确定</div>
     </div>
