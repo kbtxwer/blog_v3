@@ -242,7 +242,7 @@
           // console.log(localStorage.getItem("bg"))
           this.bgSrc = localStorage.getItem('bg')
         } else {
-          this.bgSrc = '/mac/img/bg.0e445a5d.jpg'
+          this.bgSrc = '../assets/images/wallpapers/bg2.jpg'
         }
       }
     }
