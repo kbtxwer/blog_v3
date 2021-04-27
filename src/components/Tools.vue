@@ -1,27 +1,79 @@
 <template>
   <div class="tools">
     <div class="content">
+
+      <div class="search">
+        <input type="text" placeholder="搜索工具" v-model="keyWord"/>
+        <button @click="search(keyWord)">搜索</button>
+        <button @click="search('')">重置</button>
+      </div>
+
+      <ul class="list-box">
+        <li v-for="(tool,index) in tools" :data-id="index" style="cursor:pointer;" @click="openTool(tool)">
+          <img :src="tool.icon" width="80px">
+          <p>{{tool.name}}</p>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
+  import Browser from '@/components/Browser'
   export default {
     name: 'Tools',
-    props: {
-
-    },
     data() {
       return {
-        
+        init_tools:[],
+        tools:[],
+        keyWord:''
       }
     },
-
-    created() {
-
+    mounted () {
+      axios.get('data/tools_data.json').then(e=>{
+        this.init_tools = e.data
+        this.tools = this.init_tools
+      })
     },
-
-    methods: {}
+    methods: {
+      search(keyWord){
+        if(!keyWord) {
+          this.tools = this.init_tools
+          this.keyWord = ''
+          return
+        }
+        this.tools = []
+        this.init_tools.forEach((tool,index)=>{
+          if(tool.name.indexOf(keyWord)!==-1){
+            this.tools.push(tool)
+          }
+        })
+      },
+      //打开新窗口
+      newFrame(url,title,who){
+        this.$layer.iframe({
+          title: title,
+          maxmin: true,
+          shade:false,
+          area: ['70%', '60%'],
+          content: {
+            content: Browser, //传递的组件对象
+            parent: this, //当前的vue对象
+            data: {
+              'url':url
+            } //props(向组件中传入的参数)
+          }
+        });
+      },
+      openTool(tool){
+        if(tool.newtab){
+          window.open(tool.url,'_blank')
+          return;
+        }
+        this.newFrame(tool.url,tool.name)
+      }
+    }
   }
 </script>
 
@@ -42,6 +94,10 @@
     display: flex;
     padding-top: 20px;
     flex-wrap: wrap;
+  }
+
+  .list-box :hover {
+    background: #dedede;
   }
 
   .list-box li {
@@ -75,5 +131,33 @@
   .list-box li .title {
     line-height: 40px;
     color: #333;
+  }
+
+
+  .search{
+    width: 30%;
+    margin: 0 0 0 auto;
+    display: flex;
+  }
+  .search input{
+    float: left;
+    flex: 4;
+    height: 30px;
+    outline: none;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+    padding-left: 10px;
+  }
+  .search button{
+    float: right;
+    flex: 1;
+    height: 30px;
+    border: 1px solid #a1afce;
+    background-color: #e0e0e0;
+
+    outline: none;
+  }
+  .search button:active{
+    opacity: 0.5;
   }
 </style>

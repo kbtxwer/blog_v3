@@ -101,26 +101,6 @@
     border: #E84840 2px solid;
   }
 
-  /*.btn-confirm {*/
-  /*  width: 60px;*/
-  /*  line-height: 40px;*/
-  /*  margin: 20px auto 20px;*/
-  /*  text-align: center;*/
-  /*  background: #E84840;*/
-  /*  color: #FFFFFF;*/
-  /*  border-radius: 25px;*/
-  /*  cursor: pointer;*/
-  /*  transition: width 0.5s;*/
-  /*}*/
-
-  /*.btn-confirm:active {*/
-  /*  opacity: 0.5;*/
-  /*}*/
-
-  /*.btn-confirm:hover {*/
-  /*  width: 100px;*/
-  /*}*/
-
 
   .search{
     width: 30%;

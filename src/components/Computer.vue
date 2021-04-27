@@ -1,6 +1,19 @@
 <template>
   <div class="computer">
-    <div class="navigation"><img src="images/icons/computer.png" alt="">{{currentPath}}</div>
+
+    <div style="display: flex">
+      <div class="navigation"><img src="images/icons/computer.png" alt="">{{currentPath}}</div>
+      <img data-v-9232cc6a="" src="images/icons/goback.svg" alt="" @click="goback" title="返回上级目录" class="gobackbtn">
+      <div class="search">
+        <input type="text" placeholder="搜索当前目录" v-model="keyWord" @keyup.enter="search(keyWord)" @keyup.esc="search('')"/>
+        <button @click="search(keyWord)">搜索</button>
+        <button @click="search('')">重置</button>
+      </div>
+    </div>
+
+
+
+
     <div class="content">
       <ul class="left-box">
         <li class="iconfont" @click="enterRoot">&#xe636;&nbsp;&nbsp;主目录</li>
@@ -32,13 +45,16 @@
 
 <script>
   import axios from 'axios'
-
+  import Browser from '@/components/Browser'
   export default {
     name: 'Computer',
     data(){
       return {
+        keyWord:'',
         root_file_data:[],
         neighbour_data:[],
+        file_data_stack:[],
+        file_data_saved:[],
         file_data:[],
         currentPath:''
       }
@@ -47,6 +63,22 @@
 
     },
     methods: {
+      search(keyWord){
+        //搜索前先保存相关数据
+        if(this.file_data_saved.length===0){
+          this.file_data_saved = this.file_data
+        }
+        //清空搜索
+        if(!keyWord){
+          this.file_data = this.file_data_saved
+          this.keyWord=''
+          return
+        }
+        this.file_data = []
+        this.file_data_saved.forEach((file,index)=>{
+          if(file.title.indexOf(keyWord)!==-1) this.file_data.push(file)
+        })
+      },
       async getData(file){
         let combined_data = []
         //只有（根）目录能请求到数据，此外要是没有资源目录也无法打开
@@ -76,34 +108,67 @@
             }
           })
         })
+        //将当前页面数据“压栈”
+        this.file_data_stack.unshift(this.file_data)
         this.file_data = combined_data
-        //return combined_data;
+        //清空搜索缓存
+        this.file_data_saved = []
       },
       async getReq(url){
         let res = await axios.get(url)
         return res
       },
+      goback(){
+        if(this.file_data_stack.length===0) return;
+        //"回退"到上级目录
+        this.currentPath = this.currentPath.substring(0,this.currentPath.lastIndexOf('/'))
+        //"弹栈"
+        this.file_data = this.file_data_stack[0]
+        this.file_data_stack.splice(0,1)
+      },
       enterRoot(){
         this.currentPath = '> 我的电脑'
+        this.file_data_stack = []
         this.file_data = this.root_file_data
       },
       enterNeighbour(){
-        this.currentPath = '> 友情链接',
-          this.file_data = this.neighbour_data
+        this.currentPath = '> 友情链接'
+        this.file_data_stack = []
+        this.file_data = this.neighbour_data
       },
       processFile(file){
         if(file.type==='floder'||file.type==='root'){
           this.enterDir(file)
           return
         }
-        if(file.url) window.open(file.url)
+        if(file.url) this.newFrame(file.url,file.title)
         else alert('没有合适的方式处理此资源')
       },
       enterDir(file){
         this.currentPath += ('/' + file.title)
         console.log(this.getData(file))
+      },
+
+      //打开新窗口
+      newFrame(url,title){
+        this.$layer.iframe({
+          title: title,
+          maxmin: true,
+          shade:false,
+          area: ['70%', '60%'],
+          content: {
+            content: Browser, //传递的组件对象
+            parent: this, //当前的vue对象
+            data: {
+              'url':url
+            } //props(向组件中传入的参数)
+          }
+        });
       }
+
     },
+
+
     mounted () {
       axios.get('data/root_file_data.json').then(e=>{
         this.root_file_data = e.data
@@ -127,13 +192,13 @@
     display: flex;
     height: 20px;
     line-height: 20px;
-    width: 98%;
-    margin: 10px auto;
+    width: 80%;
+    margin: 10px auto 10px 5px;
     font-size: 13px;
     color: #333;
     border-radius: 3px;
     border: 1px #a9a9a9 solid;
-    cursor: pointer;
+    cursor: text;
   }
 
   .navigation img {
@@ -239,5 +304,42 @@
     width: 50px;
     overflow: hidden;
     box-sizing: border-box;
+  }
+
+
+  .search{
+    width: 30%;
+    margin: 10px auto 10px 5px;
+    /*margin: 0 0 0 auto;*/
+    display: flex;
+  }
+  .search input{
+    float: left;
+    flex: 6;
+    height: 22px;
+    outline: none;
+    border: 1px solid #e0e0e0;
+    box-sizing: border-box;
+    padding-left: 10px;
+  }
+  .search button{
+    float: right;
+    flex: 1;
+    height: 22px;
+    border: 1px solid #a1afce;
+    background-color: #e0e0e0;
+
+    outline: none;
+  }
+  .search button:active{
+    opacity: 0.5;
+  }
+
+  .gobackbtn {
+    height: 20px;
+    margin: 10px 0px 10px 0px;
+    border: 1px solid #bababa;
+    border-radius: 3px;
+    cursor: pointer;
   }
 </style>
