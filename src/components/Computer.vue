@@ -1,6 +1,6 @@
 <template>
   <div class="computer">
-    <div class="navigation"><img src="../assets/images/icons/computer.png" alt="">{{currentPath}}</div>
+    <div class="navigation"><img src="images/icons/computer.png" alt="">{{currentPath}}</div>
     <div class="content">
       <ul class="left-box">
         <li class="iconfont" @click="enterRoot">&#xe636;&nbsp;&nbsp;主目录</li>
@@ -17,8 +17,8 @@
 
       <ul class="right-box">
         <li v-for="file in file_data" @click="processFile(file)">
-          <img v-if="!file.type||file.type==='root'" src="../assets/images/icons/disk.png" alt="">
-          <img v-if="file.title.endsWith('html')||file.type==='link'" src="../assets/images/icons/html.png" alt=""/>
+          <img v-if="!file.type||file.type==='root'" src="images/icons/disk.png" alt="">
+          <img v-if="file.title.endsWith('html')||file.type==='link'" src="images/icons/html.png" alt=""/>
           <div :title="file.title + '\n' + file.inner_name">
             <span class="title">{{file.title}}</span>
             <span v-if="!file.type||file.type==='root'" class="progress-bar"></span>
@@ -105,11 +105,11 @@
       }
     },
     mounted () {
-      axios.get('https://kbtxwer.gitee.io/data/root_file_data.json').then(e=>{
+      axios.get('data/root_file_data.json').then(e=>{
         this.root_file_data = e.data
         this.enterRoot()
       })
-      axios.get('https://kbtxwer.gitee.io/data/neighbour_data.json').then(e=>{
+      axios.get('data/neighbour_data.json').then(e=>{
         this.neighbour_data = e.data
       })
     }
@@ -231,7 +231,7 @@
   }
 
   .progress-bar:before {
-    content: url(../assets/images/bar.png);
+    content: url(/images/bar.png);
     position: absolute;
     top: 0;
     left: 0;

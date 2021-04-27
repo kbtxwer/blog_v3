@@ -1,15 +1,13 @@
 <template>
   <div class="browser">
-    <iframe src="https://cn.bing.com/" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+    <iframe :src="url" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
   </div>
 </template>
 
 <script>
   export default {
     name: 'Browser',
-    props: {
-
-    },
+    props: ['url'],
     methods: {
 
     }

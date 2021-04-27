@@ -5,14 +5,14 @@
         <li class="iconfont"><a href="https://www.apple.com/cn/" target="_blank" title="苹果官网">&#xe60b;</a></li>
         <li><a href="https://github.com/lw1995/Vue-Mac-WebDesktop" target="_blank" title="原版">GitHub</a></li>
         <li><a href="https://gitee.com/kbtxwer/mac-web-desktop" target="_blank" title="改版">Gitee</a></li>
-        <li @click="computer">文件</li>
-        <li @click="wallpaper">壁纸</li>
-        <li @click="about">关于</li>
+        <li @click="newFrame(null,'我的电脑','Computer')">文件</li>
+        <li @click="newFrame(null,'壁纸','wallpaper')">壁纸</li>
+        <li @click="newFrame(null,'关于','about')">关于</li>
       </ul>
       <ul class="header-right">
         <li class="iconfont">&#xe6c0;</li>
         <li class="iconfont">&#xe688;</li>
-        <li class="iconfont" @click="openMusic">&#xe6ca;</li>
+        <li class="iconfont" @click="newFrame('http://www.kuwo.cn/','酷我音乐')">&#xe6ca;</li>
         <li class="iconfont">&#xe6a7;</li>
         <li class="iconfont">&#xe6cb;</li>
         <li class="iconfont">&#xe6b8;</li>
@@ -21,45 +21,17 @@
     </div>
     <div class="content-hone" :style="{backgroundImage: 'url(' + bgSrc + ')' }" @click="weatherHide">
       <ul class="app-list">
-        <li class="list-item" @click="computer"><img src="../assets/images/icons/computer.png" alt=""><span>我的电脑</span></li>
-        <li class="list-item" onclick="window.open('https://pan.baidu.com/disk/main#/recyclebin/list')"><img src="../assets/images/icons/TrashIcon.png" alt=""><span>回收站</span></li>
-        <li class="list-item" @click="tools"><img src="../assets/images/tool.png" alt=""><span>工具箱</span></li>
+        <li class="list-item" @click="newFrame(null,'我的电脑','Computer')"><img src="images/icons/computer.png" alt=""><span>我的电脑</span></li>
+        <li class="list-item" onclick="window.open('https://pan.baidu.com/disk/main#/recyclebin/list')"><img src="images/icons/TrashIcon.png" alt=""><span>回收站</span></li>
+        <li class="list-item" @click="newFrame(null,'工具箱','tools')"><img src="images/tool.png" alt=""><span>工具箱</span></li>
       </ul>
     </div>
-    <div id="container" @click="weatherHide">
+    <div id="container" @click="weatherHide" title="单击直接用iframe打开页面，拖拽可以在新标签页打开">
       <div id="dock">
         <ul>
-          <li onclick="window.open('https://www.fenderchina.net/')">
-            <span>Finder 芬达</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/1.png"></a>
-          </li>
-          <li @click="openBrowser">
-            <span>Chrome</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/2.png"></a>
-          </li>
-          <li onclick="window.open('https://ext.chrome.360.cn/')">
-            <span>App Store</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/4.png"></a>
-          </li>
-          <li onclick="window.open('https://codepen.io/')">
-            <span>Codepen</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/5.png"></a>
-          </li>
-          <li onclick="window.open('https://launchpad.net/')">
-            <span>Launchpad</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/6.png"></a>
-          </li>
-          <li onclick="window.open('http://zhushou.360.cn/detail/index/soft_id/731461')">
-            <span>System setup</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/7.png"></a>
-          </li>
-          <li onclick="window.open('https://fanyi.baidu.com')">
-            <span>Siri</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/8.png"></a>
-          </li>
-          <li @click="openMusic">
-            <span>酷我音乐</span>
-            <a href="javascript:void(0)"><img src="../assets/images/icons/9.png"></a>
+          <li v-for="(dock) in dock_data" @click="newFrame(dock.url,dock.title,dock.who)" @dragend="newWindow(dock.url)">
+            <span>{{dock.title}}</span>
+            <a href="#"><img :src="dock.icon"></a>
           </li>
         </ul>
       </div>
@@ -75,17 +47,16 @@
 
 <script>
   // @ is an alias to /src
-  import Music from '@/components/Music.vue'
   import Browser from '@/components/Browser.vue'
   import Wallpaper from '@/components/Wallpaper.vue'
   import Tools from '@/components/Tools.vue'
   import Computer from '@/components/Computer.vue'
   import About from '@/components/About.vue'
+  import axios from 'axios'
 
   export default {
     name: 'home',
     components: {
-      Music,
       Wallpaper,
       Browser,
       Tools,
@@ -96,16 +67,9 @@
       return {
         time: '',
         setInter: null,
-        musicShow: false,
-        musicNarrow: false,
-        wallShow: false,
-        browserShow: false,
-        browserNarrow: false,
-        toolShow: false,
-        computerShow: false,
-        aboutShow: false,
         weatherShow: false,
-        bgSrc: '../assets/images/wallpapers/bg.jpg',
+        bgSrc: 'images/wallpapers/bg.jpg',
+        dock_data:[]
       }
     },
 
@@ -123,33 +87,38 @@
       this.setInter = setInterval(() => {
         this.newDate()
       }, 1000)
+      axios.get("data/dock_data.json").then(e=>{
+        this.dock_data = e.data
+      })
       this.setBg()
     },
 
     methods: {
-      /* 打开音乐 */
-      openMusic() {
-        this.$layer.iframe({
-          title: '音乐',
-          maxmin: true,
-          area: ['70%', '60%'],
-          content: {
-            content: Music, //传递的组件对象
-            parent: this, //当前的vue对象
-            data: {} //props
-          }
-        });
+      newWindow(url){
+        window.open(url)
+        return false
       },
-      /* 打开浏览器 */
-      openBrowser() {
+      getComponent(who){
+        if(!who) return Browser;
+        who = who.toLowerCase();
+        if(who==='computer') return Computer;
+        if(who==='about') return About;
+        if(who==='wallpaper') return Wallpaper;
+        if(who==='tools') return Tools;
+      },
+      //打开新窗口
+      newFrame(url,title,who){
         this.$layer.iframe({
-          title: '浏览器',
+          title: title,
           maxmin: true,
+          shade:false,
           area: ['70%', '60%'],
           content: {
-            content: Browser, //传递的组件对象
+            content: this.getComponent(who), //传递的组件对象
             parent: this, //当前的vue对象
-            data: {} //props
+            data: {
+              'url':url
+            } //props(向组件中传入的参数)
           }
         });
       },
@@ -166,19 +135,6 @@
           }
         });
       },
-      about() {
-        this.$layer.iframe({
-          title: '关于',
-          maxmin: true,
-          area: ['70%', '60%'],
-          content: {
-            content: About, //传递的组件对象
-            parent: this, //当前的vue对象
-            data: {} //props
-          }
-        });
-      },
-
       weather() {
         if (this.weatherShow) {
           this.weatherShow = false
@@ -186,33 +142,8 @@
           this.weatherShow = true
         }
       },
-
       weatherHide() {
         this.weatherShow = false
-      },
-      computer() {
-        this.$layer.iframe({
-          title: '我的电脑 v1.0',
-          maxmin: true,
-          area: ['70%', '60%'],
-          content: {
-            content: Computer, //传递的组件对象
-            parent: this, //当前的vue对象
-            data: {} //props
-          }
-        });
-      },
-      tools() {
-        this.$layer.iframe({
-          title: '工具箱',
-          maxmin: true,
-          area: ['70%', '60%'],
-          content: {
-            content: Tools, //传递的组件对象
-            parent: this, //当前的vue对象
-            data: {} //props
-          }
-        });
       },
       newDate() {
         let now = new Date()
@@ -232,17 +163,16 @@
         if (minu < 10) minu = '0' + minu
         if (sec < 10) sec = '0' + sec
         if (MS < 100) MS = '0' + MS
-        const arrweek = new Array('星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六')
+        const arrweek = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
         let week = arrweek[day]
 
         this.time = hour + ':' + minu + ':' + sec + ' ' + week
       },
       setBg() {
-        if (localStorage.getItem('bg') != null) {
-          // console.log(localStorage.getItem("bg"))
+        if (localStorage.getItem('bg')) {
           this.bgSrc = localStorage.getItem('bg')
         } else {
-          this.bgSrc = '../assets/images/wallpapers/bg2.jpg'
+          this.bgSrc = 'images/wallpapers/bg2.jpg'
         }
       }
     }
@@ -298,7 +228,7 @@
 
   .content-hone {
     height: calc(100vh - 30px);
-    background: url(../assets/images/wallpapers/bg.jpg) no-repeat no-repeat center;
+    background: url(/images/wallpapers/bg.jpg) no-repeat no-repeat center;
     background-size: 100% 100%;
     overflow: hidden;
   }

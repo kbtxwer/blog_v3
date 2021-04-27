@@ -2,14 +2,15 @@
   <div class="wallpaper">
     <div class="content">
       <ul class="list-box">
-        <li data-id='1' @click="choice"><img :class="[imgNum == 1 ? 'active' : '']" src="../assets/images/wallpapers/bg.jpg" alt=""></li>
-        <li data-id='2' @click="choice"><img :class="[imgNum == 2 ? 'active' : '']" src="../assets/images/wallpapers/bg2.jpg" alt=""></li>
-        <li data-id='4' @click="choice"><img :class="[imgNum == 4 ? 'active' : '']" src="../assets/images/wallpapers/bg4.jpg" alt=""></li>
-        <li data-id='3' @click="choice"><img :class="[imgNum == 3 ? 'active' : '']" src="../assets/images/wallpapers/bg3.jpg" alt=""></li>
-        <li data-id='5' @click="choice"><img :class="[imgNum == 5 ? 'active' : '']" src="../assets/images/wallpapers/bg5.jpg" alt=""></li>
-        <li data-id='6' @click="choice"><img :class="[imgNum == 6 ? 'active' : '']" src="../assets/images/wallpapers/bg6.jpg" alt=""></li>
+        <li v-for="(image,index) in imgList" :data-id="index" @click="choice(image)">
+          <img :src="image">
+        </li>
       </ul>
-      <div class="btn-confirm" @click="confirm">确定</div>
+      <div class="search">
+        <input type="text" placeholder="请输入网络图片URL" title="以https开头，可能会受到跨域策略限制无法生效" v-model="imgSrc"/>
+        <button @click="confirm">确定</button>
+      </div>
+<!--      <div class="btn-confirm" @click="confirm">确定</div>-->
     </div>
   </div>
 </template>
@@ -25,27 +26,34 @@
     },
     data() {
       return {
-        imgNum: '',
+        imgList:[],
         imgSrc: ''
       }
     },
+    mounted () {
+      let init_img_list = ["images/wallpapers/bg.jpg","images/wallpapers/bg2.jpg","images/wallpapers/bg3.jpg","images/wallpapers/bg4.jpg","images/wallpapers/bg5.jpg","images/wallpapers/bg6.jpg"]
+      let keyName = 'imgList'
+      let img_list = JSON.parse(localStorage.getItem(keyName))
+      if(!img_list) {
+        localStorage.setItem(keyName, JSON.stringify(init_img_list))
+        img_list = init_img_list
+      }
+      this.imgList = img_list
+    },
     methods: {
-      choice(e) {
-        this.imgNum = e.path[1].dataset.id
-        this.imgSrc = e.srcElement.currentSrc
+      choice(image) {
+        localStorage.setItem('bg',image)
+        this.$parent.setBg()
       },
       confirm() {
-        if (this.imgSrc != '') {
+        console.log(this.imgSrc)
+        if (this.imgSrc) {
           localStorage.setItem('bg', this.imgSrc)
-          this.imgNum = ''
           this.$parent.setBg()
-          this.cancel()
+          this.imgList.push(this.imgSrc)
+          localStorage.setItem('imgList', JSON.stringify(this.imgList))
         }
-      },
-      cancel() {
-        this.$layer.close(this.layerid);
       }
-
     }
   }
 </script>
@@ -58,8 +66,7 @@
   }
 
   .content {
-    height: 100%;
-    border: 1px solid #B4B4B4;
+    /*height: 100%;*/
     box-sizing: border-box;
   }
 
@@ -94,23 +101,51 @@
     border: #E84840 2px solid;
   }
 
-  .btn-confirm {
-    width: 60px;
-    line-height: 40px;
-    margin: 20px auto 20px;
-    text-align: center;
-    background: #E84840;
-    color: #FFFFFF;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: width 0.5s;
-  }
+  /*.btn-confirm {*/
+  /*  width: 60px;*/
+  /*  line-height: 40px;*/
+  /*  margin: 20px auto 20px;*/
+  /*  text-align: center;*/
+  /*  background: #E84840;*/
+  /*  color: #FFFFFF;*/
+  /*  border-radius: 25px;*/
+  /*  cursor: pointer;*/
+  /*  transition: width 0.5s;*/
+  /*}*/
 
-  .btn-confirm:active {
+  /*.btn-confirm:active {*/
+  /*  opacity: 0.5;*/
+  /*}*/
+
+  /*.btn-confirm:hover {*/
+  /*  width: 100px;*/
+  /*}*/
+
+
+  .search{
+    width: 30%;
+    margin: 0 auto;
+    display: flex;
+  }
+  .search input{
+    float: left;
+    flex: 4;
+    height: 30px;
+    outline: none;
+    border: 1px solid red;
+    box-sizing: border-box;
+    padding-left: 10px;
+  }
+  .search button{
+    float: right;
+    flex: 1;
+    height: 30px;
+    background-color: red;
+    color: white;
+    border-style: none;
+    outline: none;
+  }
+  .search button:active{
     opacity: 0.5;
-  }
-
-  .btn-confirm:hover {
-    width: 100px;
   }
 </style>
