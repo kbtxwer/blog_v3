@@ -39,11 +39,11 @@
         "url": "https://youwuqiong.com/tag/%e5%b2%b1%e5%b2%b1/"
     },
     {
-        "title": "？？？",
+        "title": "南方公园",
         "source": [
-            "blog2"
+            "https://kbtxwer.gitee.io/southpark/list.json"
         ],
-        "inner_name": "",
+        "inner_name": "The South Park",
         "type": "root"
     }
 ]

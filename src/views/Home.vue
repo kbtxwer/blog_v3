@@ -12,7 +12,7 @@
       <ul class="header-right">
         <li class="iconfont">&#xe6c0;</li>
         <li class="iconfont">&#xe688;</li>
-        <li class="iconfont" @click="newFrame('http://www.kuwo.cn/','酷我音乐')">&#xe6ca;</li>
+        <li class="iconfont" @click="newFrame('http://music.vaiwan.com/','搜索音乐')">&#xe6ca;</li>
         <li class="iconfont">&#xe6a7;</li>
         <li class="iconfont">&#xe6cb;</li>
         <li class="iconfont">&#xe6b8;</li>
@@ -29,7 +29,7 @@
     <div id="container" @click="weatherHide" title="单击直接用iframe打开页面，拖拽可以在新标签页打开">
       <div id="dock">
         <ul>
-          <li v-for="(dock) in dock_data" @click="newFrame(dock.url,dock.title,dock.who)" @dragend="newWindow(dock.url)">
+          <li v-for="(dock) in dock_data" @click="newFrame(dock.url,dock.title,dock.who)" @dragstart.prevent="newWindow(dock.url)">
             <span>{{dock.title}}</span>
             <a href="#"><img :src="dock.icon"></a>
           </li>
@@ -229,7 +229,7 @@
   .content-hone {
     height: calc(100vh - 30px);
     background: url(/images/wallpapers/bg.jpg) no-repeat no-repeat center;
-    background-size: 100% 100%;
+    background-size: cover;
     overflow: hidden;
   }
 

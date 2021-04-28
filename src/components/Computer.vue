@@ -29,9 +29,10 @@
       </ul>
 
       <ul class="right-box">
-        <li v-for="file in file_data" @click="processFile(file)">
-          <img v-if="!file.type||file.type==='root'" src="images/icons/disk.png" alt="">
-          <img v-if="file.title.endsWith('html')||file.type==='link'" src="images/icons/html.png" alt=""/>
+        <li v-for="file in file_data" @click="processFile(file)" @dragstart.prevent="windowopen(file)">
+<!--          <img v-if="!file.type||file.type==='root'" src="images/icons/disk.png" alt="">-->
+<!--          <img v-if="file.title.endsWith('html')||file.type==='link'" src="images/icons/html.png" alt=""/>-->
+          <img :src="getIcon(file)" alt=""/>
           <div :title="file.title + '\n' + file.inner_name">
             <span class="title">{{file.title}}</span>
             <span v-if="!file.type||file.type==='root'" class="progress-bar"></span>
@@ -63,6 +64,9 @@
 
     },
     methods: {
+      windowopen(file){
+        if(file.url) window.open(file.url)
+      },
       search(keyWord){
         //搜索前先保存相关数据
         if(this.file_data_saved.length===0){
@@ -79,10 +83,28 @@
           if(file.title.indexOf(keyWord)!==-1) this.file_data.push(file)
         })
       },
+      getSize(fileSize){
+        let byte = fileSize
+        let kb = byte/1024
+        let mb = kb/1024
+        let gb = mb/1024
+        if(gb>1) return gb.toFixed(2) + ' GB'
+        if(mb>1) return mb.toFixed(2) + ' MB'
+        if(kb>1) return kb.toFixed(2) + ' KB'
+        return byte + ' B'
+      },
+      getIcon(file){
+        if(!file.type||file.type==='root') return 'images/icons/disk.png'
+        if(file.title.endsWith('html')||file.type==='link') return 'images/icons/html.png'
+        if(file.type==='folder') return 'images/icons/folder.svg'
+        if(file.thumbnail) return file.thumbnail.replaceAll('http://','https://')
+        if(file.title.endsWith('mp4')||file.title.endsWith('mkv')) return 'images/icons/video.svg'
+        if(file.type==='file') return 'images/icons/file.svg'
+      },
       async getData(file){
         let combined_data = []
         //只有（根）目录能请求到数据，此外要是没有资源目录也无法打开
-        if((file.type!=='root'&&file.type!=='floder')||!file.source) return combined_data;
+        if((file.type!=='root'&&file.type!=='folder')||!file.source) return combined_data;
         let source = file.source
         source.forEach((item)=>{
           //如果字符串没有以http开头，则从我的博客中直接引用资源
@@ -96,7 +118,7 @@
           let cur_data = this.getReq(item)
           cur_data.then(e=>{
             //console.log(e)
-            //文章类型
+            //说明获取到的是公众号文章索引
             if(e.data.article){
               e.data.article.forEach(a=>{
                 a.type='file'
@@ -105,7 +127,21 @@
                 a.url=url + a.name
                 combined_data.push(a)
               })
+              return
             }
+            //说明获取到的是超星网盘文件索引
+            if(e.data.list&&e.data.totalCount){
+              e.data.list.forEach(f=>{
+                f.type = f.isfile?'file':'folder'
+                f.title = f.name
+                if(f.isfile) f.url = 'https://pan-yz.chaoxing.com/preview/showpreview_' + f.id + '.html'
+                //去掉末尾的list.json，保留斜杠
+                else f.source = [item.substring(0,item.length - 'list.json'.length) + f.name + '/list.json']
+                f.inner_name = f.isfile?('大小：' + this.getSize(f.filesize)):'文件夹'
+                combined_data.push(f)
+              })
+            }
+
           })
         })
         //将当前页面数据“压栈”
@@ -137,7 +173,7 @@
         this.file_data = this.neighbour_data
       },
       processFile(file){
-        if(file.type==='floder'||file.type==='root'){
+        if(file.type==='folder'||file.type==='root'){
           this.enterDir(file)
           return
         }
