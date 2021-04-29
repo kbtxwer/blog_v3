@@ -182,8 +182,15 @@
 <style>
   @import url("../assets/css/common.css");
 
+  @keyframes be_solid {
+    from {opacity: 40%;}
+    to {opacity: 100%;}
+  }
+
   .header {
-    position: relative;
+    position: fixed;
+    width: 100%;
+    opacity: 40%;
     display: flex;
     height: 30px;
     line-height: 30px;
@@ -191,6 +198,11 @@
     box-shadow: 0 1px 8px #888888;
     color: #333;
     z-index: 5;
+  }
+  .header:hover{
+    animation-name: be_solid;
+    animation-duration: 500ms;
+    animation-fill-mode: forwards;
   }
 
   .header-left,
@@ -227,7 +239,7 @@
   }
 
   .content-hone {
-    height: calc(100vh - 30px);
+    height: calc(100vh);
     background: url(/images/wallpapers/bg.jpg) no-repeat no-repeat center;
     background-size: cover;
     overflow: hidden;
@@ -240,6 +252,7 @@
     flex-wrap: wrap;
     align-content: flex-start;
     padding-left: 20px;
+    padding-top: 30px;
   }
 
   .app-list .list-item {

@@ -1,7 +1,7 @@
 <template>
   <div class="computer">
 
-    <div style="display: flex">
+    <div class="navigation_0">
       <div class="navigation"><img src="images/icons/computer.png" alt="">{{currentPath}}</div>
       <img data-v-9232cc6a="" src="images/icons/goback.svg" alt="" @click="goback" title="返回上级目录" class="gobackbtn">
       <div class="search">
@@ -223,7 +223,14 @@
     min-height: 100%;
     background: #fff;
   }
-
+  .navigation_0{
+    position: fixed;
+    width: 100%;
+    display: flex;
+    border-top: 1px solid #b4b4b4;
+    border-bottom: 1px solid #c3c3c3;
+    background: white;
+  }
   .navigation {
     display: flex;
     height: 20px;
@@ -250,6 +257,8 @@
   }
 
   .left-box {
+    margin-top: 43px;
+    position: fixed;
     width: 188px;
     border-right: 1px solid #B4B4B4;
     text-align: left;
@@ -275,7 +284,8 @@
   .right-box {
     display: flex;
     flex: 1;
-    padding-top: 20px;
+    margin-left: 188px;
+    margin-top: 35px;
     flex-wrap: wrap;
     align-content: flex-start;
   }
@@ -345,8 +355,7 @@
 
   .search{
     width: 30%;
-    margin: 10px auto 10px 5px;
-    /*margin: 0 0 0 auto;*/
+    margin: 10px 5px;
     display: flex;
   }
   .search input{
