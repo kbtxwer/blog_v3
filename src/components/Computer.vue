@@ -110,10 +110,16 @@
           //如果字符串没有以http开头，则从我的博客中直接引用资源
           //console.log(item)
           let url
+          //简写版本
           if(!item.startsWith('http')){
             // https://kbtxwer.gitee.io/blog/maogeshijue/json_utf8
             url = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
             item = url + 'json_utf8'
+          }
+          //完整版本
+          if(item.startsWith('http')){
+            if(item.endsWith('/')) item = item.substring(0,item.length - 1)
+            if(!item.endsWith('/json_utf8')) item += '/json_utf8'
           }
           let cur_data = this.getReq(item)
           cur_data.then(e=>{
@@ -173,12 +179,13 @@
         this.file_data = this.neighbour_data
       },
       processFile(file){
-        if(file.type==='folder'||file.type==='root'){
-          this.enterDir(file)
-          return
-        }
-        if(file.url) this.newFrame(file.url,file.title)
-        else alert('没有合适的方式处理此资源')
+        //文件夹或根目录应当直接进入
+        if(file.type==='folder'||file.type==='root') {this.enterDir(file);return;}
+        //如果要求在新标签页打开，或者资源是http形式，在新标签页打开
+        if(file.newtab||(file.url&&!file.url.startsWith('https://'))) {window.open(file.url);return;}
+        //如果存在资源链接，在内嵌页面打开
+        if(file.url) {this.newFrame(file.url,file.title);return;}
+        alert('没有合适的方式处理此资源')
       },
       enterDir(file){
         this.currentPath += ('/' + file.title)

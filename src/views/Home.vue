@@ -4,13 +4,13 @@
       <ul class="header-left">
         <li class="iconfont"><a href="https://www.apple.com/cn/" target="_blank" title="苹果官网">&#xe60b;</a></li>
         <li><a href="https://github.com/lw1995/Vue-Mac-WebDesktop" target="_blank" title="原版">GitHub</a></li>
-        <li><a href="https://gitee.com/kbtxwer/mac-web-desktop" target="_blank" title="改版">Gitee</a></li>
+        <li><a href="https://gitee.com/kbtxwer/blog_v3" target="_blank" title="改版">Gitee</a></li>
         <li @click="newFrame(null,'我的电脑','Computer')">文件</li>
         <li @click="newFrame(null,'壁纸','wallpaper')">壁纸</li>
         <li @click="newFrame(null,'关于','about')">关于</li>
       </ul>
       <ul class="header-right">
-        <li class="iconfont">&#xe6c0;</li>
+        <li class="iconfont" onclick="window.close()">&#xe6c0;</li>
         <li class="iconfont">&#xe688;</li>
         <li class="iconfont" @click="newFrame('http://music.vaiwan.com/','搜索音乐')">&#xe6ca;</li>
         <li class="iconfont">&#xe6a7;</li>
@@ -183,14 +183,14 @@
   @import url("../assets/css/common.css");
 
   @keyframes be_solid {
-    from {opacity: 40%;}
-    to {opacity: 100%;}
+    from {opacity: 0.4;}
+    to {opacity: 1;}
   }
 
   .header {
     position: fixed;
     width: 100%;
-    opacity: 40%;
+    opacity: 0.4;
     display: flex;
     height: 30px;
     line-height: 30px;
