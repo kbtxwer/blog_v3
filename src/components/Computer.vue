@@ -118,9 +118,8 @@
             // https://kbtxwer.gitee.io/blog/maogeshijue/json_utf8
             file_baseUrl = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
             item = file_baseUrl + 'json_utf8'
-          }
-          //完整源
-          if(item.startsWith('http')){
+          }else {
+            //完整源可以放在任何地方，但是要求名称对应
             // 格式： https://kbtxwer.github.io/blog3/
             if(!item.endsWith('/')) item += '/'
             // https://kbtxwer.github.io/blog3/tianyaDaily/
