@@ -107,19 +107,25 @@
         if((file.type!=='root'&&file.type!=='folder')||!file.source) return combined_data;
         let source = file.source
         source.forEach((item)=>{
+          //确保每一项采用的都是https协议
+          item = item.replace('http://','https://')
           //如果字符串没有以http开头，则从我的博客中直接引用资源
           //console.log(item)
-          let url
-          //简写版本
+          //当前源下的文件的基址
+          let file_baseUrl
+          //简写源总是在 kbtxwer.gitee.io 的域下
           if(!item.startsWith('http')){
             // https://kbtxwer.gitee.io/blog/maogeshijue/json_utf8
-            url = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
-            item = url + 'json_utf8'
+            file_baseUrl = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
+            item = file_baseUrl + 'json_utf8'
           }
-          //完整版本
+          //完整源
           if(item.startsWith('http')){
-            if(item.endsWith('/')) item = item.substring(0,item.length - 1)
-            if(!item.endsWith('/json_utf8')) item += '/json_utf8'
+            // 格式： https://kbtxwer.github.io/blog3/
+            if(!item.endsWith('/')) item += '/'
+            // https://kbtxwer.github.io/blog3/tianyaDaily/
+            file_baseUrl = item + file.inner_name + '/'
+            item = file_baseUrl + 'json_utf8'
           }
           let cur_data = this.getReq(item)
           cur_data.then(e=>{
@@ -130,7 +136,7 @@
                 a.type='file'
                 a.title = a.name
                 a.inner_name = a.date
-                a.url=url + a.name
+                a.url=file_baseUrl + a.name
                 combined_data.push(a)
               })
               return
