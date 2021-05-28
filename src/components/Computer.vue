@@ -119,14 +119,17 @@
             file_baseUrl = 'https://kbtxwer.gitee.io/' + item + '/' + file.inner_name + '/'
             item = file_baseUrl + 'json_utf8'
           }else {
-            //完整源可以放在任何地方，但是要求名称对应
-            // 格式： https://kbtxwer.github.io/blog3/
-            if(!item.endsWith('/')) item += '/'
-            // https://kbtxwer.github.io/blog3/tianyaDaily/
-            file_baseUrl = item + file.inner_name + '/'
-            item = file_baseUrl + 'json_utf8'
+            //以.json结尾的是资源列表，不需要处理
+            if(!item.endsWith('.json')) {
+              //完整源可以放在任何地方，但是要求名称对应
+              // 格式： https://kbtxwer.github.io/blog3/
+              if (!item.endsWith('/')) item += '/'
+              // https://kbtxwer.github.io/blog3/tianyaDaily/
+              file_baseUrl = item + file.inner_name + '/'
+              item = file_baseUrl + 'json_utf8'
+            }
           }
-          let cur_data = this.getReq(item)
+          let cur_data = axios.get(item)
           cur_data.then(e=>{
             //console.log(e)
             //说明获取到的是公众号文章索引
@@ -138,10 +141,13 @@
                 a.url=file_baseUrl + a.name
                 combined_data.push(a)
               })
-              return
+              //取得数据后，按发布日期降序排序
+              combined_data.sort((d1,d2)=>{
+                return d1.inner_name<d2.inner_name?1:-1
+              })
             }
             //说明获取到的是超星网盘文件索引
-            if(e.data.list&&e.data.totalCount){
+            else if(e.data.list&&e.data.totalCount){
               e.data.list.forEach(f=>{
                 f.type = f.isfile?'file':'folder'
                 f.title = f.name
@@ -151,6 +157,12 @@
                 f.inner_name = f.isfile?('大小：' + this.getSize(f.filesize)):'文件夹'
                 combined_data.push(f)
               })
+
+              //取得数据后，按名称升序排序，注意数字
+              combined_data.sort((d1,d2)=>{
+                return  d1.title.localeCompare(d2.title,undefined,{numeric:true,sensitivity:'base'})
+              })
+
             }
 
           })
