@@ -5,7 +5,7 @@
       <div class="navigation"><img src="images/icons/computer.png" alt="">{{currentPath}}</div>
       <img data-v-9232cc6a="" src="images/icons/goback.svg" alt="" @click="goback" title="返回上级目录" class="gobackbtn">
       <div class="search">
-        <input type="text" placeholder="搜索当前目录" v-model="keyWord" @keyup.enter="search(keyWord)" @keyup.esc="search('')"/>
+        <input type="text" :placeholder="placeholder" v-model="keyWord" @keyup.enter="search(keyWord)" @keyup.esc="search('')"/>
         <button @click="search(keyWord)">搜索</button>
         <button @click="search('')">重置</button>
       </div>
@@ -57,6 +57,7 @@
         file_data_stack:[],
         file_data_saved:[],
         file_data:[],
+        placeholder:'搜索当前目录',
         currentPath:''
       }
     },
@@ -66,6 +67,12 @@
     methods: {
       windowopen(file){
         if(file.url) window.open(file.url)
+      },
+      setPlaceHolderWithCount(){
+        this.placeholder = '搜索当前目录'
+        if(this.file_data.length>0){
+          this.placeholder += ("(共" +  this.file_data.length + "项）")
+        }
       },
       search(keyWord){
         //搜索前先保存相关数据
@@ -94,10 +101,11 @@
         return byte + ' B'
       },
       getIcon(file){
+        if(file.icon) return file.icon;//自定义图标优先级高于一切
         if(!file.type||file.type==='root') return 'images/icons/disk.png'
         if(file.title.endsWith('html')||file.type==='link') return 'images/icons/html.png'
         if(file.type==='folder') return 'images/icons/folder.svg'
-        if(file.thumbnail) return file.thumbnail.replaceAll('http://','https://')
+        if(file.thumbnail) return file.thumbnail.replaceAll('http://','https://') //超星网盘专属
         if(file.title.endsWith('mp4')||file.title.endsWith('mkv')) return 'images/icons/video.svg'
         if(file.type==='file') return 'images/icons/file.svg'
       },
