@@ -24,7 +24,7 @@
         <li class="iconfont" onclick="window.open('https://npupt.com')" title="仅限西工大学生访问">&#xe6ad;&nbsp;&nbsp;下载</li>
         <li class="iconfont" onclick="window.open('https://pan.baidu.com/disk/main#/recyclebin/list')">&#xe61c;&nbsp;&nbsp;回收站</li>
         <li class="iconfont" @click="enterRoot" style="border-top: 1px solid #B4B4B4;">&#xe622;&nbsp;&nbsp;我的电脑</li>
-        <li class="iconfont" onclick="window.open('https://pan-yz.chaoxing.com')">&#xe743;&nbsp;&nbsp;云盘</li>
+        <li class="iconfont" @click="enterNetdisk">&#xe743;&nbsp;&nbsp;云盘</li>
         <li class="iconfont" @click="enterNeighbour" style="border-top: 1px solid #B4B4B4;">&#xe638;&nbsp;&nbsp;网络邻居(友链)</li>
       </ul>
 
@@ -54,6 +54,7 @@
         keyWord:'',
         root_file_data:[],
         neighbour_data:[],
+        netdisk_data:[],
         file_data_stack:[],
         file_data_saved:[],
         file_data:[],
@@ -207,6 +208,11 @@
         this.file_data_stack = []
         this.file_data = this.neighbour_data
       },
+      enterNetdisk(){
+        this.currentPath = '> 网盘'
+        this.file_data_stack = []
+        this.file_data = this.netdisk_data
+      },
       processFile(file,drag){
 
         //文件夹或根目录应当直接进入
@@ -250,7 +256,9 @@
       axios.get('data/neighbour_data.json').then(e=>{
         this.neighbour_data = e.data
       })
-
+      axios.get('data/netdisk_data.json').then(e=>{
+        this.netdisk_data = e.data
+      })
     }
   }
 </script>
