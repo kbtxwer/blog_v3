@@ -66,12 +66,14 @@
     },
     methods: {
       windowopen(file){
-        if(file.url) window.open(file.url)
+        //超星网盘的资源可以用直链下载
+        if(file.puid&&file.id){window.open("http://pan-yz.chaoxing.com/download/downloadfile?fleid=" + file.id + "&puid=" + file.puid);return}
+        if(file.url) {window.open(file.url);return}
       },
-      setPlaceHolderWithCount(){
-        this.placeholder = '搜索当前目录'
+      setPlaceHolderWithCount(keyWord){
         if(this.file_data.length>0){
-          this.placeholder += ("(共" +  this.file_data.length + "项）")
+          if(!keyWord) keyWord = '搜索当前目录'
+          this.placeholder = keyWord + "(共" +  this.file_data.length + "项）"
         }
       },
       search(keyWord){
@@ -83,12 +85,14 @@
         if(!keyWord){
           this.file_data = this.file_data_saved
           this.keyWord=''
+          this.setPlaceHolderWithCount(keyWord)
           return
         }
         this.file_data = []
         this.file_data_saved.forEach((file,index)=>{
           if(file.title.indexOf(keyWord)!==-1) this.file_data.push(file)
         })
+        this.setPlaceHolderWithCount(keyWord)
       },
       getSize(fileSize){
         let byte = fileSize
@@ -105,7 +109,7 @@
         if(!file.type||file.type==='root') return 'images/icons/disk.png'
         if(file.title.endsWith('html')||file.type==='link') return 'images/icons/html.png'
         if(file.type==='folder') return 'images/icons/folder.svg'
-        if(file.thumbnail) return file.thumbnail.replaceAll('http://','https://') //超星网盘专属
+        if(file.thumbnail) return file.thumbnail.replace('http://','https://') //超星网盘专属
         if(file.title.endsWith('mp4')||file.title.endsWith('mkv')) return 'images/icons/video.svg'
         if(file.type==='file') return 'images/icons/file.svg'
       },
@@ -203,7 +207,8 @@
         this.file_data_stack = []
         this.file_data = this.neighbour_data
       },
-      processFile(file){
+      processFile(file,drag){
+
         //文件夹或根目录应当直接进入
         if(file.type==='folder'||file.type==='root') {this.enterDir(file);return;}
         //如果要求在新标签页打开，或者资源是http形式，在新标签页打开
@@ -245,6 +250,7 @@
       axios.get('data/neighbour_data.json').then(e=>{
         this.neighbour_data = e.data
       })
+
     }
   }
 </script>
