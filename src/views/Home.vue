@@ -68,7 +68,7 @@
         time: '',
         setInter: null,
         weatherShow: false,
-        bgSrc: 'images/wallpapers/bg.jpg',
+        bgSrc: 'images/wallpapers/bg7.jpg',
         dock_data:[]
       }
     },
@@ -172,7 +172,7 @@
         if (localStorage.getItem('bg')) {
           this.bgSrc = localStorage.getItem('bg')
         } else {
-          this.bgSrc = 'images/wallpapers/bg2.jpg'
+          this.bgSrc = 'images/wallpapers/bg1.jpg'
         }
       }
     }

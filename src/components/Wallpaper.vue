@@ -31,7 +31,9 @@
       }
     },
     mounted () {
-      let init_img_list = ["images/wallpapers/bg.jpg","images/wallpapers/bg2.jpg","images/wallpapers/bg3.jpg","images/wallpapers/bg4.jpg","images/wallpapers/bg5.jpg","images/wallpapers/bg6.jpg"]
+      let init_img_list = ["images/wallpapers/bg1.jpg","images/wallpapers/bg2.jpg","images/wallpapers/bg3.jpg",
+        "images/wallpapers/bg4.jpg","images/wallpapers/bg5.jpg","images/wallpapers/bg6.jpg","images/wallpapers/bg7.jpg","images/wallpapers/bg8.jpg"]
+
       let keyName = 'imgList'
       let img_list = JSON.parse(localStorage.getItem(keyName))
       if(!img_list) {
