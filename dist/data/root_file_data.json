@@ -31,6 +31,15 @@
         "inner_name": "bohaiminihistory",
         "type": "root"
     },
+    {
+        "title": "党人碑的熟人茶馆",
+        "source": [
+			"https://kbtxwer.github.io/blog3"
+        ],
+		"icon":"https://wx.qlogo.cn/mmhead/Q3auHgzwzM630ic3oS6iahJK56nRjC17QFBWEdoPWhoachhK4ia5oy4bg/0",
+        "inner_name": "dangrenbei",
+        "type": "root"
+    },
 	{
         "title": "吃瓜群众岱岱",
         "inner_name":"daelon",
