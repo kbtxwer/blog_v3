@@ -1,5 +1,10 @@
 [
     {
+        "title": "课程表",
+        "url": "/course",
+        "icon": "images/icons/course.png"
+    },
+    {
         "title": "哔哩哔哩",
         "url": "https://www.bilibili.com/",
         "icon": "https://static.hdslb.com/mobile/img/512.png"
