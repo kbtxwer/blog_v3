@@ -55,5 +55,14 @@
 		"icon":"https://wx.qlogo.cn/mmhead/Q3auHgzwzM5FQicbx29Ymy9sDXzNlLIVYVQLmZsYQLswm49CDhrlXAQ/0",
         "inner_name": "longtailtech",
         "type": "root"
+    },
+    {
+        "title": "通用备份",
+        "source": [
+            "https://kbtxwer.github.io/blog3"
+        ],
+		"icon":"https://browser2.qhimg.com/t0177d5c018e279b92d.png",
+        "inner_name": "general",
+        "type": "root"
     }
 ]
