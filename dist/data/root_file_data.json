@@ -40,6 +40,15 @@
         "inner_name": "dangrenbei",
         "type": "root"
     },
+    {
+        "title": "海棠见素",
+        "source": [
+			"https://kbtxwer.github.io/blog3"
+        ],
+		"icon":"https://wx.qlogo.cn/mmhead/Q3auHgzwzM6AZLnk82cNPdvFTWAcxhQFA8MW3CdU5LClFh05iaTdbjA/0",
+        "inner_name": "haitang",
+        "type": "root"
+    },
 	{
         "title": "吃瓜群众岱岱",
         "inner_name":"daelon",
